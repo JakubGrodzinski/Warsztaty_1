@@ -17,11 +17,15 @@ public class Main5
 {
     public static void main(String[] args)
     {
-        String[] forb = new String[2];
-        forb[0] = "FIFA";
-        forb[1] = "Trump";
+        String[] forb = new String[5];
+        forb[0] = "oraz";
+        forb[1] = "ponieważ";
+        forb[2] = "albowiem";
+        forb[3] = "jak";
+        forb[4] = "nie";
         fWords();
         withoutForbidden(forb);
+        ranking();
 
     }
     static void fWords ()
@@ -96,6 +100,93 @@ public class Main5
         {
             System.out.println("Błąd odczytu");
         }
+    }
+
+    static int maxInArr (int[] arr)
+    {
+        int max = arr[0];
+        for (int i = 0; i < arr.length; i++)
+        {
+            if(max < arr[i])
+            {
+                max = arr[i];
+            }
+        }
+        return max;
+    }
+
+    static void ranking ()
+    {
+        int counterForTables = 0;
+        int i = 0;
+        String[] words;
+        File file = new File("filtered_popular_words.txt");
+        try {
+            Scanner sc = new Scanner(file);
+
+            while (sc.hasNextLine()) {
+                counterForTables++;
+                sc.nextLine();
+            }
+        }
+        catch(FileNotFoundException e)
+        {
+            System.out.println("Błąd odczytu");
+        }
+            words = new String[counterForTables];
+        try
+        {
+            Scanner scan = new Scanner(file);
+            while (scan.hasNextLine())
+            {
+                words[i] = scan.nextLine();
+                i++;
+            }
+        }
+        catch (FileNotFoundException e)
+        {
+            System.out.println("Błąd odczytu");
+        }
+        int[] counterofInstances = new int[counterForTables];
+        boolean countThisIndex = true;
+        for(int j = 0; j < counterForTables; j++)
+        {
+            for(int k = 0; k < j; k++)
+            {
+                if(words[k].equals(words[j]) && counterofInstances[k] != 0)
+                {
+                    counterofInstances[k]++;
+                    countThisIndex = false;
+                    break;
+                }
+            }
+            if(countThisIndex)
+            {
+                counterofInstances[j]++;
+            }
+            countThisIndex = true;
+        }
+        int max = maxInArr(counterofInstances);
+
+            for(int k = max; k > 0; k--)
+            {
+                for(int l = 0; l < counterForTables; l++)
+                {
+                    if(counterofInstances[l] == k)
+                    {
+                        try
+                        {
+                            FileWriter op = new FileWriter("ranking.txt", true);
+                            op.append(k + ": " + words[l] + "\n");
+                            op.close();
+                        }
+                        catch (IOException e)
+                        {
+                            System.out.println("Błąd zapisu");
+                        }
+                    }
+                }
+            }
     }
 
 }
